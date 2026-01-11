@@ -1,27 +1,38 @@
-    package org.example.ecommerce.model;
+package org.example.ecommerce.model;
 
-    public class Category {
-        private long categoryId;
-        private String categoryName;
+import jakarta.persistence.*;
 
-        public long getCategoryId() {
-            return categoryId;
-        }
+@Entity
+@Table(name = "category")
+public class Category {
 
-        public Category(long categoryId, String categoryName) {
-            this.categoryId = categoryId;
-            this.categoryName = categoryName;
-        }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long categoryId;   // ← MUST be Long (not long)
 
-        public void setCategoryId(long categoryId) {
-            this.categoryId = categoryId;
-        }
+    private String categoryName;
 
-        public String getCategoryName() {
-            return categoryName;
-        }
-
-        public void setCategoryName(String categoryName) {
-            this.categoryName = categoryName;
-        }
+    public Category() {
     }
+
+    public Category(Long categoryId, String categoryName) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+}
