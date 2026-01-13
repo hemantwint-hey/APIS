@@ -1,5 +1,6 @@
 package org.example.ecommerce.controller;
 
+import jakarta.validation.Valid;
 import org.example.ecommerce.model.Category;
 import org.example.ecommerce.service.CategoryService;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class CategoryController {
             value = "/public/categories",
             consumes = "application/json"
     )
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category Added Successfully", HttpStatus.CREATED);
     }
