@@ -2,6 +2,8 @@ package org.example.ecommerce.controller;
 
 import jakarta.validation.Valid;
 import org.example.ecommerce.model.Category;
+import org.example.ecommerce.payload.CategoryDTO;
+import org.example.ecommerce.payload.CategoryResponse;
 import org.example.ecommerce.service.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,9 @@ public class CategoryController {
 
     // GET all categories
     @GetMapping("/public/categories")
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> allCategories = categoryService.getAllCategories();
-        return ResponseEntity.ok(allCategories);
+    public ResponseEntity<CategoryResponse> getAllCategories() {
+        CategoryResponse categoryResponse=categoryService.getAllCategories();
+        return ResponseEntity.ok(categoryResponse);
     }
 
     // CREATE category
@@ -32,9 +34,9 @@ public class CategoryController {
             value = "/public/categories",
             consumes = "application/json"
     )
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category Added Successfully", HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+        CategoryDTO savedCategoryDTO=categoryService.createCategory(categoryDTO);
+        return new ResponseEntity<>(savedCategoryDTO,HttpStatus.CREATED);
     }
 
     // UPDATE category
@@ -42,18 +44,18 @@ public class CategoryController {
             value = "/public/categories/{categoryId}",
             consumes = "application/json"
     )
-    public ResponseEntity<String> updateCategory(
-            @RequestBody Category category,
+    public ResponseEntity<CategoryDTO> updateCategory(
+            @RequestBody CategoryDTO categoryDTO,
             @PathVariable Long categoryId) {
 
-        categoryService.updateCategory(category, categoryId);
-        return ResponseEntity.ok("Category updated successfully");
+       CategoryDTO savedCategoryDTO= categoryService.updateCategory(categoryDTO, categoryId);
+        return new ResponseEntity<>(savedCategoryDTO,HttpStatus.OK);
     }
 
     // DELETE category
     @DeleteMapping("/admin/categories/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
-        String status = categoryService.deleteCategory(categoryId);
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId) {
+        CategoryDTO status = categoryService.deleteCategory(categoryId);
         return ResponseEntity.ok(status);
     }
 }
