@@ -2,7 +2,7 @@ package org.example.ecommerce.security.jwt;
 
 import java.util.List;
 
-public class LoginResponse {
+public class UserInfoResponse {
 
     private String jwtToken;
     private String username;
@@ -12,7 +12,7 @@ public class LoginResponse {
         return jwtToken;
     }
 
-    public LoginResponse(String jwtToken, String username, List<String> roles) {
+    public UserInfoResponse(String jwtToken, String username, List<String> roles) {
         this.jwtToken = jwtToken;
         this.username = username;
         this.roles = roles;
