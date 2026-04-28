@@ -3,16 +3,26 @@ package org.example.ecommerce.security.jwt;
 import java.util.List;
 
 public class UserInfoResponse {
-
+    private Long id;
     private String jwtToken;
     private String username;
     private List<String> roles;
+
 
     public String getJwtToken() {
         return jwtToken;
     }
 
-    public UserInfoResponse(String jwtToken, String username, List<String> roles) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public UserInfoResponse(Long id, String jwtToken, String username, List<String> roles) {
+        this.id=id;
         this.jwtToken = jwtToken;
         this.username = username;
         this.roles = roles;
