@@ -14,8 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.util.WebUtils;
 
 import javax.crypto.SecretKey;
@@ -60,6 +62,14 @@ public class JwtUtils {
                 .build();
         return cookie;
     }
+
+    public ResponseCookie getCleanJwtCookie(){
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
+                .path("/api")
+                .build();
+        return cookie;
+    }
+
     // Getting Username from JWT Token
     public String getUserNameFromJWTToken(String token){
         return  Jwts.parser()
@@ -73,6 +83,7 @@ public class JwtUtils {
                 Decoders.BASE64.decode(jwtSecret)
         );
     }
+
     // Validate JWT Token
     public boolean validateJwtToken(String authToken){
         try{
