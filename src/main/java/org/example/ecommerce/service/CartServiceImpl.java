@@ -6,11 +6,16 @@ import org.example.ecommerce.model.Cart;
 import org.example.ecommerce.model.CartItem;
 import org.example.ecommerce.model.Product;
 import org.example.ecommerce.payload.CartDTO;
+import org.example.ecommerce.payload.ProductDTO;
 import org.example.ecommerce.repositories.CartItemRepository;
 import org.example.ecommerce.repositories.CartRepository;
 import org.example.ecommerce.repositories.ProductRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class CartServiceImpl implements  CartService{
@@ -20,7 +25,8 @@ public class CartServiceImpl implements  CartService{
     @Autowired
     ProductRepository productRepository;
 
-
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     AuthUtil authUtil;
@@ -42,10 +48,35 @@ public class CartServiceImpl implements  CartService{
         if(cartItem != null)throw new APIException("Product " + product.getProductName() + "already exists in the cart");
 
         if( product.getQuantity() == 0)throw  new APIException(product.getProductName() + "is not available");
+
+        if( product.getQuantity() < quantity )throw  new APIException("Please, make an order of the " + product.getProductName() + " less than or equal to the quantity"
+                + product.getQuantity()+".");
         // create cart item
+        CartItem newCartItem = new CartItem();
+
+        newCartItem.setProduct(product);
+        newCartItem.setCart(cart);
+        newCartItem.setQuantity(quantity);
+        newCartItem.setDiscount(product.getDiscount());
+        newCartItem.setProductPrice(product.getSpecialPrice());
         //save cart item
+        cartItemRepository.save(newCartItem);
+        product.setQuantity(product.getQuantity());
+        cart.setTotalPrice(cart.getTotalPrice() + (product.getSpecialPrice() * quantity));
+        cartRepository.save(cart);
+
         // return updated cart
-        return null;
+        CartDTO cartDtO =  modelMapper.map(cart,CartDTO.class);
+
+        List<CartItem> cartItems = cart.getCartItems();
+        Stream<ProductDTO> productDTOStream =  cartItems.stream().map(item -> {
+            ProductDTO map = modelMapper.map(item.getProduct(),ProductDTO.class);
+            map.setQuantity(item.getQuantity());
+            return map;
+        });
+
+        cartDtO.setProducts(productDTOStream.toList());
+        return cartDtO;
     }
     private Cart createCart(){
          Cart userCart = cartRepository.findCartByEmail(authUtil.loggedInEmail());
