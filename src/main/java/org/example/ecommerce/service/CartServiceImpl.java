@@ -20,16 +20,16 @@ import java.util.stream.Stream;
 @Service
 public class CartServiceImpl implements  CartService{
     @Autowired
-    CartRepository cartRepository;
+    private CartRepository cartRepository;
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    ModelMapper modelMapper;
+    private ModelMapper modelMapper;
 
     @Autowired
-    AuthUtil authUtils;
+    private AuthUtil authUtil;
 
     @Autowired
     private CartItemRepository cartItemRepository;
