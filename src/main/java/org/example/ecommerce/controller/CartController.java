@@ -1,6 +1,6 @@
 package org.example.ecommerce.controller;
 
-import org.apache.coyote.Response;
+import org.example.ecommerce.exceptions.ResourceNotFoundException;
 import org.example.ecommerce.model.Cart;
 import org.example.ecommerce.payload.CartDTO;
 import org.example.ecommerce.repositories.CartRepository;
@@ -40,6 +40,7 @@ public class CartController {
     public ResponseEntity<CartDTO> getCartById(){
         String emailID = authUtil.loggedInEmail();
         Cart cart = cartRepository.findCartByEmail(emailID);
+        if(cart == null)throw new ResourceNotFoundException("Cart", "email", emailID);
         Long cartId = cart.getCartId();
 
         CartDTO cartDTO = cartService.getCart(emailID, cartId);
@@ -52,7 +53,7 @@ public class CartController {
         return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
     @DeleteMapping("/carts/{cartId}/products/{productId}")
-    public ResponseEntity<String> deleteProductFromCart(Long cartId, Long productId){
+    public ResponseEntity<String> deleteProductFromCart(@PathVariable Long cartId, @PathVariable Long productId){
         String status = cartService.deleteProductFromCart(cartId,productId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }

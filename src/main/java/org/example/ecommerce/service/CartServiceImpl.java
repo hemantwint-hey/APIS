@@ -114,6 +114,7 @@ public class CartServiceImpl implements  CartService{
     public CartDTO updateProductQuantityInCart(Long productId, Integer quantity ) {
         String emailId = authUtil.loggedInEmail();
         Cart userCart = cartRepository.findCartByEmail(emailId);
+        if(userCart == null)throw new ResourceNotFoundException("Cart", "email", emailId);
         Long cartId = userCart.getCartId();
         Cart cart = cartRepository.findById(cartId).orElseThrow(()-> new ResourceNotFoundException("Cart","cartId",cartId));
         Product product  = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId",productId));
@@ -124,6 +125,7 @@ public class CartServiceImpl implements  CartService{
                 + product.getQuantity()+".");
         CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
         if(cartItem == null)throw new APIException("Product" + product.getProductName());
+        if(cartItem.getQuantity() + quantity < 0)throw new APIException("Product quantity cannot be less than zero");
 
         cartItem.setProductPrice(product.getSpecialPrice());
         cartItem.setQuantity(cartItem.getQuantity()+quantity);
