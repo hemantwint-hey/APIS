@@ -3,10 +3,12 @@ package org.example.ecommerce.service;
 import org.example.ecommerce.config.AppConstants;
 import org.example.ecommerce.exceptions.APIException;
 import org.example.ecommerce.exceptions.ResourceNotFoundException;
+import org.example.ecommerce.model.Cart;
 import org.example.ecommerce.model.Category;
 import org.example.ecommerce.model.Product;
 import org.example.ecommerce.payload.ProductDTO;
 import org.example.ecommerce.payload.ProductResponse;
+import org.example.ecommerce.repositories.CartRepository;
 import org.example.ecommerce.repositories.CategoryRepository;
 import org.example.ecommerce.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -33,11 +35,17 @@ public class ProductServiceImpl implements  ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
+
+
     @Autowired
     private FileService fileService;
 
     @Value("${project.image}")
     private String path;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CartService cartService;
 
     public ProductDTO addProduct(Long categoryId,ProductDTO productDTO){
         Category category = categoryRepository.findById(categoryId)
@@ -163,6 +171,10 @@ public class ProductServiceImpl implements  ProductService {
         productFromDb.setSpecialPrice(specialPrice);
 
         Product savedProduct= productRepository.save(productFromDb);
+
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.updateProductInCarts(cart.getCartId(), productId));
+
         return modelMapper.map(savedProduct,ProductDTO.class);
     }
 
