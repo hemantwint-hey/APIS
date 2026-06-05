@@ -145,7 +145,7 @@ public class CartServiceImpl implements  CartService{
         cartDTO.setProducts(productStream.toList());
         return cartDTO;
     }
-
+    @Transactional
     @Override
     public String deleteProductFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Cart","cartId",cartId));
