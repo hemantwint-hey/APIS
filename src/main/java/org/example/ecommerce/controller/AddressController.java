@@ -1,6 +1,5 @@
 package org.example.ecommerce.controller;
 
-import org.example.ecommerce.model.Address;
 import org.example.ecommerce.model.User;
 import org.example.ecommerce.payload.AddressDTO;
 import org.example.ecommerce.service.AddressService;
@@ -39,7 +38,7 @@ public class AddressController {
         AddressDTO addressDTO = addressService.getAddressesById(addressId);
         return new ResponseEntity<>(addressDTO, HttpStatus.OK);
     }
-    @PostMapping("/users/addresses")
+    @GetMapping("/users/addresses")
     public ResponseEntity<List<AddressDTO>> getUserAddresses(){
         User user = authUtil.loggedInUser();
         List<AddressDTO> addressList = addressService.getUserAddress(user);
